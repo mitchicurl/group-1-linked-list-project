@@ -1,1 +1,162 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+void deleteList(struct Node** start_ref) {
+    struct Node* temp;
+    while (*start_ref != NULL) {
+        temp = *start_ref;
+        *start_ref = (*start_ref)->next;
+        free(temp);
+    }
+    printf("Memory cleared. List deleted.\n");
+}
+
+void insertEnd(struct Node** start_ref, int val) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) { 
+        printf("Memory overflow!\n");
+        return;
+    }
+    newNode->data = val;
+    newNode->next = NULL;
+    newNode->prev = NULL; 
+    
+    if (*start_ref == NULL) {
+        *start_ref = newNode;
+        return;
+    }
+    struct Node* temp = *start_ref;
+    while (temp->next != NULL) temp = temp->next;
+    
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+void display(struct Node* start) {
+    struct Node* temp = start;
+    if (temp == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    printf("List: NULL <-> ");
+    while (temp != NULL) {
+        printf("[%d] <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Deletion Before a Node
+void deleteBeforeNode(struct Node** start_ref, int targetVal) {
+    if (*start_ref == NULL || (*start_ref)->next == NULL) {
+        printf("Error: List too short to delete 'before'.\n");
+        return;
+    }
+
+    if ((*start_ref)->data == targetVal) {
+        printf("Error: No node exists before the head (%d).\n", targetVal);
+        return;
+    }
+
+    struct Node* Current = *start_ref;
+
+    while (Current != NULL && Current->data != targetVal) {
+        Current = Current->next;
+    }
+
+    if (Current != NULL) {
+        struct Node* DelNode = Current->prev;
+        
+        if (DelNode == *start_ref) {
+            *start_ref = Current;
+            Current->prev = NULL;
+        } 
+        else {
+            DelNode->prev->next = Current;
+            Current->prev = DelNode->prev;
+        }
+        
+        free(DelNode);
+        printf("Success: Node before %d deleted.\n", targetVal);
+    } else {
+        printf("Error: Value %d not found.\n", targetVal);
+    }
+}
+
+// Deletion After a Node
+void deleteAfterNode(struct Node** start_ref, int targetVal) {
+    if (*start_ref == NULL) {
+        printf("Error: List is empty.\n");
+        return;
+    }
+
+    struct Node* Current = *start_ref;
+    
+    while (Current != NULL && Current->data != targetVal) {
+        Current = Current->next;
+    }
+
+    if (Current != NULL) {
+        if (Current->next == NULL) {
+            printf("Error: No node exists after %d.\n", targetVal);
+        } else {
+            struct Node* DelNode = Current->next;
+          
+            Current->next = DelNode->next;
+            
+            if (DelNode->next != NULL) {
+                DelNode->next->prev = Current;
+            }
+            
+            free(DelNode);
+            printf("Success: Node after %d deleted.\n", targetVal);
+        }
+    } else {
+        printf("Error: Value %d not found.\n", targetVal);
+    }
+}
+
+int main() {
+    struct Node* START = NULL; 
+    int choice, target;
+
+    insertEnd(&START, 10); 
+    insertEnd(&START, 20); 
+    insertEnd(&START, 30); 
+    insertEnd(&START, 40);
+
+    while (1) {
+        printf("\n1. Display 2. Delete Before 3. Delete After 4. Exit\n");
+        printf("Choice: ");
+        if (scanf("%d", &choice) != 1) break;
+
+        switch (choice) {
+            case 1: 
+                display(START); 
+                break;
+            case 2:
+                printf("Enter target value: ");
+                scanf("%d", &target);
+                deleteBeforeNode(&START, target);
+                break;
+            case 3:
+                printf("Enter target value: ");
+                scanf("%d", &target);
+                deleteAfterNode(&START, target);
+                break;
+            case 4:
+                deleteList(&START); 
+                return 0;
+            default: 
+                printf("Invalid choice.\n");
+        }
+    }
+    return 0;
+}
 
