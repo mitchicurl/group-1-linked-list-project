@@ -56,11 +56,54 @@ void loadFromFile(struct Node** head) {
 
 // PERSON 2: Creation and Traversal
 void createList(struct Node** head) {
-    // Code dito...
+    int n, data;
+
+    printf("Enter number of nodes to create: ");
+    scanf("%d", &n);
+
+    if (n <= 0) {
+        printf("Invalid number of nodes.\n");
+        return;
+    }
+
+    struct Node* temp = NULL;
+    struct Node* newNode = NULL;
+
+    for (int i = 1; i <= n; i++) {
+        printf("Enter data for node %d: ", i);
+        scanf("%d", &data);
+
+        newNode = createNode(data);
+
+        if (*head == NULL) {        // first node
+            *head = newNode;
+            temp = newNode;
+        } 
+        else {
+            temp->next = newNode;   // forward link
+            newNode->prev = temp;   // backward link
+            temp = newNode;
+        }
+    }
 }
 
 void traverse(struct Node* head) {
-    // Code dito...
+
+    if (head == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    struct Node* temp = head;
+
+    printf("\nDoubly Linked List:\n");
+
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("NULL\n");
 }
 
 // PERSON 3: Adding of New Node at Start and End
