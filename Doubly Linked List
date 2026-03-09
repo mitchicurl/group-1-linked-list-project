@@ -1,0 +1,171 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+void insertValue (struct Node **head, int value)
+{
+    struct Node *newNode;
+
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    if(newNode == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+
+    newNode->data = value;
+    newNode->prev = NULL;
+    newNode->next = *head;
+
+    if(*head != NULL)
+    {
+        (*head)->prev = newNode;
+    }
+
+    *head = newNode;
+
+    printf("Value inserted\n");
+}
+
+void deleteAtStart(struct Node **head)
+{
+    struct Node *temp;
+
+    if(*head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    temp = *head;
+    *head = temp->next;
+
+    if(*head != NULL)
+    {
+        (*head)->prev = NULL;
+    }
+
+    free(temp);
+
+    printf("First node deleted.\n");
+}
+
+void deleteByValue(struct Node **head, int target)
+{
+    struct Node *current;
+
+    if(*head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    current = *head;
+
+    while(current != NULL && current->data != target)
+    {
+        current = current->next;
+    }
+
+    if(current == NULL)
+    {
+        printf("Value not  found.\n");
+        return;
+    }
+
+    if(current->prev != NULL)
+    {
+        current->prev->next = current->next;
+    }
+    else
+    {
+        *head = current->next;
+    }
+
+    if(current->next != NULL)
+    {
+        current->next->prev = current->prev;
+    }
+
+    free(current);
+
+    printf("Node deleted\n");
+}
+
+void display(struct Node *head)
+{
+    if(head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    printf("List: ");
+
+    while(head != NULL)
+    {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+
+    printf("\n");
+}
+
+int main()
+{
+    struct Node *head = NULL;
+    int choice, value;
+
+    printf("Doubly Linked List Program\n");
+
+    do
+    {
+        printf("\n1 Insert Value");
+        printf("\n2 Delete First Value");
+        printf("\n3 Delete By Value");
+        printf("\n4 Display");
+        printf("\n5 Exit");
+        printf("\nEnter choice: ");
+        scanf("%d", &choice);
+
+        if(choice == 1)
+        {
+            printf("Enter value: ");
+            scanf("%d",&value);
+            insertValue(&head, value);
+        }
+        else if(choice == 2)
+        {
+            deleteAtStart(&head);
+        }
+        else if(choice == 3)
+        {
+            printf("Enter value to delete: ");
+            scanf("%d",&value);
+            deleteByValue(&head, value);
+        }
+        else if(choice == 4)
+        {
+            display(head);
+        }
+        else if(choice == 5)
+        {
+            printf("Program ended\n");
+        }
+        else
+        {
+            printf("Invalid choice\n");
+        }
+
+    } 
+    while(choice != 5);
+
+    return 0;
+}
