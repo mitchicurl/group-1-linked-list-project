@@ -74,11 +74,57 @@ void insertAtEnd(struct Node** head, int data) {
 
 // PERSON 4: Adding New Node Before and After a Node
 void insertBefore(struct Node** head, int target, int data) {
-    // Code dito...
+    if (*head == NULL) {
+        printf("\nError: The list is empty. Target %d not found.\n", target);
+        return;
+    }
+
+    if ((*head)->data == target) {
+        insertAtStart(head, data);
+        return;
+    }
+
+    struct Node* TravNode = *head;
+
+    while (TravNode != NULL) {
+        TravNode = TravNode->next;
+        if (TravNode->data == target) break;
+    }
+
+    if (TravNode == NULL) {
+        printf("\nError: Target value %d not found in the list.\n", target);
+        return;
+    }
+    
+    struct Node* NewNode = createNode(data);
+    NewNode->prev = TravNode->prev;
+    NewNode->next = TravNode;
+    TravNode->prev->next = NewNode;
+    TravNode->prev = NewNode;
 }
 
 void insertAfter(struct Node* head, int target, int data) {
-    // Code dito...
+    if (head == NULL) {
+        printf("\nError: The list is empty. Target %d not found.\n", target);
+        return;
+    }
+
+    struct Node* TravNode = head;
+
+    while (TravNode != NULL && TravNode->data != target) {
+        TravNode = TravNode->next;
+    }
+
+    if (TravNode == NULL) {
+        printf("\nError: Target value %d not found in the list.\n", target);
+        return;
+    }
+    
+    struct Node* NewNode = createNode(data);
+    NewNode->next = TravNode->next;
+    NewNode->prev = TravNode;
+    if (TravNode->next != NULL) TravNode->next->prev = NewNode;
+    TravNode->next = NewNode;
 }
 
 // PERSON 5: Deletion of Node at Start and by Value
