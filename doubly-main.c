@@ -56,29 +56,150 @@ void loadFromFile(struct Node** head) {
 
 // --- PERSON 2: Creation and Traversal ---
 void createList(struct Node** head) {
-// Code dito
+    int n, data, i;
+
+    printf("Enter number of nodes to create: ");
+    scanf("%d", &n);
+
+    if (n <= 0) {
+        printf("Invalid number of nodes.\n");
+        return;
+    }
+
+    struct Node* temp = NULL;
+    struct Node* newNode = NULL;
+
+    for (i = 1; i <= n; i++) {
+        printf("Enter data for node %d: ", i);
+        scanf("%d", &data);
+
+        newNode = createNode(data);
+
+        if (*head == NULL) {
+            *head = newNode;
+            temp = newNode;
+        } 
+        else {
+            temp->next = newNode;
+            newNode->prev = temp;
+            temp = newNode;
+        }
+    }
 }
 
 void traverse(struct Node* head) {
-// Code dito
+    printf("\n--- Current Doubly Linked List ---\n");
+    
+    if (head == NULL) {
+        printf("The list is currently empty.\n");
+    } else {
+        struct Node* temp = head;
+        
+        while (temp != NULL) {
+            printf("[%d]", temp->data);
+
+            if (temp->next != NULL) {
+                printf(" <-> "); 
+            }
+            
+            temp = temp->next;
+        }
+        printf("\n");
+    }
+    printf("----------------------------------\n");
 }
 
 // --- PERSON 3: Adding of New Node at Start and End ---
 void insertAtStart(struct Node** head, int data) {
-// Code dito
+    struct Node* newNode = createNode(data);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    
+    newNode->next = *head;
+    (*head)->prev = newNode;
+    *head = newNode;
 }
 
 void insertAtEnd(struct Node** head, int data) {
-// Code dito
+    struct Node* newNode = createNode(data);
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->prev = temp;
 }
 
 // --- PERSON 4: Adding New Node Before and After a Node ---
 void insertBefore(struct Node** head, int target, int data) {
-// Code dito
+    if (*head == NULL) {
+        printf("\nError: The list is empty. Target %d not found.\n", target);
+        return;
+    }
+
+    if ((*head)->data == target) {
+        insertAtStart(head, data);
+        printf("\n[Success] Node inserted before %d!\n", target);
+        return;
+    }
+
+    struct Node* TravNode = *head;
+
+    while (TravNode != NULL && TravNode->data != target) {
+        TravNode = TravNode->next;
+    }
+
+    if (TravNode == NULL) {
+        printf("\nError: Target value %d not found in the list.\n", target);
+        return;
+    }
+    
+    struct Node* NewNode = createNode(data);
+    NewNode->prev = TravNode->prev;
+    NewNode->next = TravNode;
+    TravNode->prev->next = NewNode;
+    TravNode->prev = NewNode;
+    
+    printf("\n[Success] Node inserted before %d!\n", target);
 }
 
 void insertAfter(struct Node* head, int target, int data) {
-// Code dito
+    if (head == NULL) {
+        printf("\nError: The list is empty. Target %d not found.\n", target);
+        return;
+    }
+
+    struct Node* TravNode = head;
+
+    while (TravNode != NULL && TravNode->data != target) {
+        TravNode = TravNode->next;
+    }
+
+    if (TravNode == NULL) {
+        printf("\nError: Target value %d not found in the list.\n", target);
+        return;
+    }
+    
+    struct Node* NewNode = createNode(data);
+    NewNode->next = TravNode->next;
+    NewNode->prev = TravNode;
+    
+    if (TravNode->next != NULL) {
+        TravNode->next->prev = NewNode;
+    }
+    TravNode->next = NewNode;
+    
+    printf("\n[Success] Node inserted after %d!\n", target);
 }
 
 // --- PERSON 5: Deletion of Node at Start and by Value ---
@@ -98,7 +219,6 @@ void deleteAtStart(struct Node **head) {
     }
 
     free(temp);
-    printf("\n[Success] Start node deleted!\n");
 }
 
 void deleteAtEnd(struct Node** head) {
@@ -218,7 +338,7 @@ void deleteAfter(struct Node* head, int target) {
             }
             
             free(DelNode);
-            printf("\n[Success] Node after %d deleted!\n", target);
+			printf("\n[Success] Node after %d deleted!\n", target);
         }
     } else {
         printf("\nError: Value %d not found.\n", target);
