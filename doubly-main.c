@@ -56,7 +56,12 @@ void loadFromFile(struct Node** head) {
 
 // --- PERSON 2: Creation and Traversal ---
 void createList(struct Node** head) {
-    int n, data, i;
+    if (*head != NULL) {
+        printf("\n[Notice] A list already exists! Please use options 3-6 to add more nodes.\n");
+        return;
+    }
+
+    int n, data, i; 
 
     printf("Enter number of nodes to create: ");
     scanf("%d", &n);
@@ -66,25 +71,13 @@ void createList(struct Node** head) {
         return;
     }
 
-    struct Node* temp = NULL;
-    struct Node* newNode = NULL;
-
-    for (i = 1; i <= n; i++) {
+    for (i = 1; i <= n; i++) { 
         printf("Enter data for node %d: ", i);
         scanf("%d", &data);
-
-        newNode = createNode(data);
-
-        if (*head == NULL) {
-            *head = newNode;
-            temp = newNode;
-        } 
-        else {
-            temp->next = newNode;
-            newNode->prev = temp;
-            temp = newNode;
-        }
+        insertAtEnd(head, data); 
     }
+    
+    printf("\n[Success] Nodes created!\n");
 }
 
 void traverse(struct Node* head) {
@@ -374,7 +367,6 @@ int main() {
         switch (choice) {
             case 1:
                 createList(&head);
-                printf("\n[Success] Nodes created!\n");
                 waitForEnter();
                 break;
             case 2:
