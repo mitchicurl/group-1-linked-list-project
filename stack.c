@@ -13,7 +13,7 @@ void waitForEnter() {
     getchar(); 
 }
 
-void push(struct Node** top, int data); 
+void push(struct Node** top, int data, int showMessage); 
 
 void saveToFile(struct Node* top) {
     FILE *file = fopen("stack_data.txt", "w");
@@ -39,37 +39,43 @@ void loadFromFile(struct Node** top) {
         tempArr[count] = data;
         count++;
     }
+    
     for (int i = count - 1; i >= 0; i--) {
-        push(top, tempArr[i]);
+        push(top, tempArr[i], 0); 
     }
     fclose(file);
 }
 
 // TECH LEAD TASKS: FILL IN THE FUNCTIONS BELOW
 
-// 1. Add a new node to the TOP of the stack
-void push(struct Node** top, int data) {
-    // Your code here...
+// 1. Create the initial Stack (using a Do-While loop)
+void createStack(struct Node** top) {
+// Your code here...
 }
 
-// 2. Remove and delete the node at the TOP of the stack
-void pop(struct Node** top) {
-    // Your code here...
-}
-
-// 3. View the data at the TOP of the stack without removing it
-void peek(struct Node* top) {
-    // Your code here...
-}
-
-// 4. Display all items in the stack (from top to bottom)
+// 2. Display all items in the stack (from top to bottom)
 void display(struct Node* top) {
-    // Your code here...
+// Your code here...
+}
+
+// 3. Add a new node to the TOP of the stack
+void push(struct Node** top, int data, int showMessage) {
+// Your code here...
+}
+
+// 4. Remove and delete the node at the TOP of the stack
+void pop(struct Node** top) {
+// Your code here...
+}
+
+// 5. View the data at the TOP of the stack without removing it
+void peek(struct Node* top) {
+// Your code here...
 }
 
 // MAIN FUNCTION (Menu System)
 int main() {
-    struct Node* top = NULL; // In a stack, 'head' is traditionally called 'top'
+    struct Node* top = NULL; 
     int choice, data;
 
     loadFromFile(&top);
@@ -77,39 +83,43 @@ int main() {
     while (1) {
         system("cls"); 
         
-        printf("===== Stack Implementation =====\n");
-        printf("1. Push (Insert Item)\n");
-        printf("2. Pop (Remove Top Item)\n");
-        printf("3. Peek (View Top Item)\n");
-        printf("4. Display Stack\n");
-        printf("5. Exit\n");
+        printf("===== Stack Implementation by Group 1 =====\n");
+        printf("1. Create stack\n");
+        printf("2. Display stack\n");
+        printf("3. Push (insert item)\n");
+        printf("4. Pop (remove item)\n");
+        printf("5. Peek (view top item)\n");
+        printf("6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
-                printf("Enter data to push onto the stack: ");
-                scanf("%d", &data);
-                push(&top, data);
-                // Note: Add your printf("\n[Success]...") inside your push function!
+                createStack(&top);
                 waitForEnter();
                 break;
             case 2:
-                pop(&top);
-                waitForEnter();
-                break;
-            case 3:
-                peek(top);
-                waitForEnter();
-                break;
-            case 4:
                 display(top);
                 waitForEnter();
                 break;
+            case 3:
+                printf("Enter data to push onto the stack: ");
+                scanf("%d", &data);
+                push(&top, data, 1); 
+                waitForEnter();
+                break;
+            case 4:
+                pop(&top);
+                waitForEnter();
+                break;
             case 5:
+                peek(top);
+                waitForEnter();
+                break;
+            case 6:
                 printf("\nSaving data and exiting program...\n");
                 saveToFile(top);
-
+                
                 while (top != NULL) {
                     struct Node* temp = top;
                     top = top->next;
