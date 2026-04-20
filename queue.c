@@ -40,71 +40,78 @@ void loadFromFile(struct Node** front, struct Node** rear) {
 
 // TECH LEAD TASKS: FILL IN THE FUNCTIONS BELOW
 
-// 1. Add a new node to the REAR (back) of the queue
-void enqueue(struct Node** front, struct Node** rear, int data) {
-    // Your code here...
-    // Hint: If the queue is empty, the new node becomes BOTH the front and the rear
+// 1. Create the initial Queue (using the Do-While loop)
+void createQueue(struct Node** front, struct Node** rear) {
+// Your code here...
 }
 
-// 2. Remove and delete the node at the FRONT of the queue
-void dequeue(struct Node** front, struct Node** rear) {
-    // Your code here...
-    // Hint: Don't forget to check if the queue becomes empty after you delete the last node. 
-    // If it does, you must set the 'rear' to NULL as well
-}
-
-// 3. View the data at the FRONT of the queue without removing it
-void peekFront(struct Node* front) {
-    // Your code here...
-}
-
-// 4. Display all items in the queue (from front to rear)
+// 2. Display all items in the queue (from front to rear)
 void display(struct Node* front) {
-    // Your code here...
+// Your code here...
+}
+
+// 3. Add a new node to the REAR (back) of the queue
+void enqueue(struct Node** front, struct Node** rear, int data) {
+// Your code here...
+}
+
+// 4. Remove and delete the node at the FRONT of the queue
+void dequeue(struct Node** front, struct Node** rear) {
+// Your code here...
+}
+
+// 5. View the data at the FRONT of the queue without removing it
+void peekFront(struct Node* front) {
+// Your code here...
 }
 
 // MAIN FUNCTION (Menu System)
 int main() {
-    // A standard Queue tracks BOTH the front and the back of the line
     struct Node* front = NULL; 
     struct Node* rear = NULL;  
     int choice, data;
 
+    // Load saved data automatically
     loadFromFile(&front, &rear);
 
     while (1) {
         system("cls"); 
         
-        printf("===== Queue Implementation =====\n");
-        printf("1. Enqueue (Fall in line / Insert at Rear)\n");
-        printf("2. Dequeue (Serve / Remove from Front)\n");
-        printf("3. Peek Front (View next in line)\n");
-        printf("4. Display Queue\n");
-        printf("5. Exit\n");
+        printf("===== Queue Implementation by Group 1 =====\n");
+        printf("1. Create node/s\n");
+        printf("2. Display queue\n");
+        printf("3. Enqueue node\n");
+        printf("4. Dequeue node\n");
+        printf("5. Peek Front\n");
+        printf("6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
-                printf("Enter data to enqueue: ");
-                scanf("%d", &data);
-                enqueue(&front, &rear, data);
-                // Note: Add your printf("\n[Success]...") inside your enqueue function!
+                createQueue(&front, &rear);
                 waitForEnter();
                 break;
             case 2:
-                dequeue(&front, &rear);
-                waitForEnter();
-                break;
-            case 3:
-                peekFront(front);
-                waitForEnter();
-                break;
-            case 4:
                 display(front);
                 waitForEnter();
                 break;
+            case 3:
+                printf("Enter data to enqueue: ");
+                scanf("%d", &data);
+                enqueue(&front, &rear, data);
+                // Note: Make sure your success printf is inside your enqueue function!
+                waitForEnter();
+                break;
+            case 4:
+                dequeue(&front, &rear);
+                waitForEnter();
+                break;
             case 5:
+                peekFront(front);
+                waitForEnter();
+                break;
+            case 6:
                 printf("\nSaving data and exiting program...\n");
                 saveToFile(front);
 
