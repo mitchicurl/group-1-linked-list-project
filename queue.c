@@ -13,7 +13,7 @@ void waitForEnter() {
     getchar(); 
 }
 
-void enqueue(struct Node** front, struct Node** rear, int data);
+void enqueue(struct Node** front, struct Node** rear, int data, int showMessage);
 
 void saveToFile(struct Node* front) {
     FILE *file = fopen("queue_data.txt", "w");
@@ -33,59 +33,142 @@ void loadFromFile(struct Node** front, struct Node** rear) {
     
     int data;
     while (fscanf(file, "%d", &data) == 1) {
-        enqueue(front, rear, data);
+        enqueue(front, rear, data, 0); 
     }
     fclose(file);
 }
 
-// TECH LEAD TASKS: FILL IN THE FUNCTIONS BELOW
-
-// 1. Create the initial Queue (using the Do-While loop)
 void createQueue(struct Node** front, struct Node** rear) {
-// Your code here...
+    if (*front != NULL) {
+        printf("\n[Notice] A queue already exists! Please use Option 3 to Enqueue.\n");
+        return;
+    }
+
+    char resp;
+    int data;
+
+    do {
+        printf("Enter data to enqueue: ");
+        
+        if (scanf("%d", &data) != 1) {
+            printf("  -> [Error] Invalid input! Letters/characters are not allowed.\n");
+            printf("\nReturning to main menu...\n");
+            return; 
+        }
+        
+        enqueue(front, rear, data, 0); 
+
+        while (1) {
+            printf("Add another node [Y/N]? ");
+            scanf(" %c", &resp); 
+            
+            if (resp == 'Y' || resp == 'y' || resp == 'N' || resp == 'n') {
+                break; 
+            } else {
+                printf("  -> [Error] Invalid input. Please enter 'Y' for Yes or 'N' for No.\n");
+            }
+        }
+        
+    } while (resp == 'Y' || resp == 'y');
+    
+    printf("\n[Success] Initial Queue created!\n");
 }
 
-// 2. Display all items in the queue (from front to rear)
 void display(struct Node* front) {
-// Your code here...
+    if (front == NULL) {
+        printf("\nError: The Queue is Empty!\n");
+        return;
+    }
+
+    struct Node* temp = front;
+    
+    printf("\n--- Current Queue Line ---\n");
+    printf("FRONT -> ");
+    
+    while (temp != NULL) {
+        printf("[%d] -> ", temp->data);
+        temp = temp->next;
+    }
+    
+    printf("REAR\n");
+    printf("--------------------------\n");
 }
 
-// 3. Add a new node to the REAR (back) of the queue
-void enqueue(struct Node** front, struct Node** rear, int data) {
-// Your code here...
+void enqueue(struct Node** front, struct Node** rear, int data, int showMessage) {
+    struct Node* NewNode = (struct Node*)malloc(sizeof(struct Node));
+    if (NewNode == NULL) {
+        printf("\nError: Memory allocation failed!\n");
+        return;
+    }
+    
+    NewNode->data = data;
+    NewNode->next = NULL;
+
+    if (*rear == NULL) {
+        *front = *rear = NewNode;
+    } else {
+        (*rear)->next = NewNode;
+        *rear = NewNode;
+    }
+    
+    if (showMessage) {
+        printf("\n[Success] %d fell in line at the rear!\n", data);
+    }
 }
 
-// 4. Remove and delete the node at the FRONT of the queue
 void dequeue(struct Node** front, struct Node** rear) {
-// Your code here...
+    struct Node* DelNode = *front;
+
+    if (DelNode == NULL) {
+        printf("\nError: The Queue is Empty!\n");
+        return;
+    } 
+    
+    int servedData = DelNode->data; 
+    
+    *front = (*front)->next;
+    DelNode->next = NULL;
+    free(DelNode);
+    
+    if (*front == NULL) {
+        *rear = NULL;
+    }
+
+    printf("\n[Success] %d was served and left the queue!\n", servedData);
 }
 
-// 5. View the data at the FRONT of the queue without removing it
 void peekFront(struct Node* front) {
-// Your code here...
+    if (front == NULL) {
+        printf("\nError: The Queue is Empty!\n");
+    } else {
+        printf("\n[Peek] The next in line at the front is: %d\n", front->data);
+    }
 }
 
-// MAIN FUNCTION (Menu System)
 int main() {
     struct Node* front = NULL; 
     struct Node* rear = NULL;  
     int choice, data;
 
-    // Load saved data automatically
     loadFromFile(&front, &rear);
 
     while (1) {
         system("cls"); 
         
         printf("===== Queue Implementation by Group 1 =====\n");
-        printf("1. Create node/s\n");
+        printf("1. Create queue\n");
         printf("2. Display queue\n");
-        printf("3. Enqueue node\n");
-        printf("4. Dequeue node\n");
-        printf("5. Peek Front\n");
+        printf("3. Enqueue (insert item)\n");
+        printf("4. Dequeue (remove item)\n");
+        printf("5. Peek (view front item)\n");
         printf("6. Exit\n");
         printf("Enter your choice: ");
-        scanf("%d", &choice);
+        
+        if (scanf("%d", &choice) != 1) {
+            printf("\n[Error] Invalid input! Letters/symbols are not allowed.\n");
+            waitForEnter(); 
+            continue; 
+        }
 
         switch (choice) {
             case 1:
@@ -98,9 +181,11 @@ int main() {
                 break;
             case 3:
                 printf("Enter data to enqueue: ");
-                scanf("%d", &data);
-                enqueue(&front, &rear, data);
-                // Note: Make sure your success printf is inside your enqueue function!
+                if (scanf("%d", &data) != 1) {
+                    printf("\n[Error] Invalid input! Please enter a number.\n");
+                } else {
+                    enqueue(&front, &rear, data, 1); 
+                }
                 waitForEnter();
                 break;
             case 4:
@@ -114,7 +199,7 @@ int main() {
             case 6:
                 printf("\nSaving data and exiting program...\n");
                 saveToFile(front);
-
+                
                 while (front != NULL) {
                     struct Node* temp = front;
                     front = front->next;
