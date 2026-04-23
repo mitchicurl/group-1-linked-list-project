@@ -74,24 +74,46 @@ void createQueue(struct Node** front, struct Node** rear) {
     printf("\n[Success] Initial Queue created!\n");
 }
 
-void display(struct Node* front) {
-    if (front == NULL) {
-        printf("\nError: The Queue is Empty!\n");
-        return;
-    }
+void display(struct Node** front, struct Node** rear) {
+    struct Node* TravNode = *front;
 
-    struct Node* temp = front;
-    
-    printf("\n--- Current Queue Line ---\n");
-    printf("FRONT -> ");
-    
-    while (temp != NULL) {
-        printf("[%d] -> ", temp->data);
-        temp = temp->next;
+    if (TravNode == NULL) {
+        printf("\nError: The Queue is Empty!\n");
+    } else {
+        struct Node* tempFront = NULL;
+        struct Node* tempRear = NULL;
+
+        printf("\n--- Current Queue Line ---\n");
+        printf("FRONT -> ");
+
+        do {
+            printf("[%d] -> ", TravNode->data);
+
+            *front = TravNode->next;
+
+            if (*front == NULL) {
+                *rear = NULL;
+            }
+
+            TravNode->next = NULL;
+
+            if (tempFront == NULL) {
+                tempFront = tempRear = TravNode;
+            } else {
+                tempRear->next = TravNode;
+                tempRear = TravNode;
+            }
+
+            TravNode = *front;
+
+        } while (*front != NULL);
+
+        printf("REAR\n");
+        printf("--------------------------\n");
+
+        *front = tempFront;
+        *rear = tempRear;
     }
-    
-    printf("REAR\n");
-    printf("--------------------------\n");
 }
 
 void enqueue(struct Node** front, struct Node** rear, int data, int showMessage) {
@@ -176,7 +198,7 @@ int main() {
                 waitForEnter();
                 break;
             case 2:
-                display(front);
+                display(&front, &rear);
                 waitForEnter();
                 break;
             case 3:
