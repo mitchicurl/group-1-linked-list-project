@@ -142,14 +142,14 @@ void insertBefore(struct Node** head, int target, int data) {
 
     if ((*head)->data == target) {
         insertAtStart(head, data);
-        printf("\n[Success] Node inserted before %d!\n", target);
         return;
     }
 
     struct Node* TravNode = *head;
 
-    while (TravNode != NULL && TravNode->data != target) {
+    while (TravNode != NULL) {
         TravNode = TravNode->next;
+        if (TravNode->data == target) break;
     }
 
     if (TravNode == NULL) {
@@ -162,8 +162,6 @@ void insertBefore(struct Node** head, int target, int data) {
     NewNode->next = TravNode;
     TravNode->prev->next = NewNode;
     TravNode->prev = NewNode;
-    
-    printf("\n[Success] Node inserted before %d!\n", target);
 }
 
 void insertAfter(struct Node* head, int target, int data) {
@@ -186,13 +184,8 @@ void insertAfter(struct Node* head, int target, int data) {
     struct Node* NewNode = createNode(data);
     NewNode->next = TravNode->next;
     NewNode->prev = TravNode;
-    
-    if (TravNode->next != NULL) {
-        TravNode->next->prev = NewNode;
-    }
+    if (TravNode->next != NULL) TravNode->next->prev = NewNode;
     TravNode->next = NewNode;
-    
-    printf("\n[Success] Node inserted after %d!\n", target);
 }
 
 // --- PERSON 5: Deletion of Node at Start and by Value ---
