@@ -1,0 +1,240 @@
+import java.io.*;
+import java.util.*;
+
+class Node {
+    int data;
+    Node next;
+
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class Main {
+    private static Node head = null;
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final String FILENAME = "list_data.txt";
+
+    public static void main(String[] args) {
+        loadFromFile();
+
+        while (true) {
+            clearScreen();
+            System.out.println("\n===== Singly Linked List by Group 1 (Java Version) =====");
+            System.out.println("1. Create a node");
+            System.out.println("2. Display all nodes");
+            System.out.println("3. Adding of new node at the start");
+            System.out.println("4. Adding of new node at the end");
+            System.out.println("5. Adding new node before a node");
+            System.out.println("6. Adding new node after a node");
+            System.out.println("7. Deletion of node at the start");
+            System.out.println("8. Deletion of node by value");
+            System.out.println("9. Deletion of node before a node");
+            System.out.println("10. Deletion of node after a node");
+            System.out.println("11. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1: createList(); waitForEnter(); break;
+                case 2: traverse(); waitForEnter(); break;
+                case 3: 
+                    System.out.print("Enter data to insert at start: ");
+                    insertAtStart(scanner.nextInt());
+                    System.out.println("\n[Success] Node inserted at start!");
+                    waitForEnter(); break;
+                case 4: 
+                    System.out.print("Enter data to insert at end: ");
+                    insertAtEnd(scanner.nextInt());
+                    System.out.println("\n[Success] Node inserted at end!");
+                    waitForEnter(); break;
+                case 5:
+                    System.out.print("Enter target node value: ");
+                    int targetB = scanner.nextInt();
+                    System.out.print("Enter data to insert before " + targetB + ": ");
+                    insertBefore(targetB, scanner.nextInt());
+                    waitForEnter(); break;
+                case 6:
+                    System.out.print("Enter target node value: ");
+                    int targetA = scanner.nextInt();
+                    System.out.print("Enter data to insert after " + targetA + ": ");
+                    insertAfter(targetA, scanner.nextInt());
+                    waitForEnter(); break;
+                case 7: deleteAtStart(); waitForEnter(); break;
+                case 8:
+                    System.out.print("Enter the value of the node to delete: ");
+                    deleteByValue(scanner.nextInt());
+                    waitForEnter(); break;
+                case 9:
+                    System.out.print("Enter the target node value to delete BEFORE it: ");
+                    deleteBefore(scanner.nextInt());
+                    waitForEnter(); break;
+                case 10:
+                    System.out.print("Enter the target node value to delete AFTER it: ");
+                    deleteAfter(scanner.nextInt());
+                    waitForEnter(); break;
+                case 11:
+                    System.out.println("\nExiting program...");
+                    saveToFile();
+                    System.exit(0);
+                default:
+                    System.out.println("\n[Error] Invalid selection.");
+                    waitForEnter();
+            }
+        }
+    }
+
+    // --- Helper Functions ---
+
+    private static void clearScreen() {
+        // Simulates system("cls")
+        for (int i = 0; i < 50; i++) System.out.println();
+    }
+
+    private static void waitForEnter() {
+        System.out.print("\nPress Enter to continue...");
+        scanner.nextLine(); // Clear buffer
+        scanner.nextLine(); // Wait for actual enter
+    }
+
+    private static void saveToFile() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILENAME))) {
+            Node temp = head;
+            while (temp != null) {
+                writer.println(temp.data);
+                temp = temp.next;
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving to file.");
+        }
+    }
+
+    private static void loadFromFile() {
+        File file = new File(FILENAME);
+        if (!file.exists()) return;
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextInt()) {
+                insertAtEnd(fileScanner.nextInt());
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading file.");
+        }
+    }
+
+    // --- Core Operations ---
+
+    public static void createList() {
+        System.out.print("How many nodes do you want to create? ");
+        int n = scanner.nextInt();
+        if (n <= 0) { System.out.println("List is empty."); return; }
+        for (int i = 1; i <= n; i++) {
+            System.out.print("Enter data for node " + i + ": ");
+            insertAtEnd(scanner.nextInt());
+        }
+    }
+
+    public static void traverse() {
+        System.out.println("\n--- Current List ---");
+        if (head == null) {
+            System.out.println("The list is currently empty.");
+        } else {
+            Node temp = head;
+            while (temp != null) {
+                System.out.print(temp.data + "    ");
+                temp = temp.next;
+            }
+            System.out.println();
+        }
+        System.out.println("--------------------");
+    }
+
+    public static void insertAtStart(int data) {
+        Node newNode = new Node(data);
+        newNode.next = head;
+        head = newNode;
+    }
+
+    public static void insertAtEnd(int data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            head = newNode;
+            return;
+        }
+        Node temp = head;
+        while (temp.next != null) temp = temp.next;
+        temp.next = newNode;
+    }
+
+    public static void insertBefore(int target, int data) {
+        if (head == null) { System.out.println("\nError: List empty."); return; }
+        if (head.data == target) { insertAtStart(data); return; }
+
+        Node temp = head;
+        while (temp.next != null && temp.next.data != target) temp = temp.next;
+
+        if (temp.next == null) {
+            System.out.println("\nError: Target " + target + " not found.");
+        } else {
+            Node newNode = new Node(data);
+            newNode.next = temp.next;
+            temp.next = newNode;
+        }
+    }
+
+    public static void insertAfter(int target, int data) {
+        Node temp = head;
+        while (temp != null && temp.data != target) temp = temp.next;
+        if (temp == null) {
+            System.out.println("\nError: Target " + target + " not found.");
+        } else {
+            Node newNode = new Node(data);
+            newNode.next = temp.next;
+            temp.next = newNode;
+        }
+    }
+
+    public static void deleteAtStart() {
+        if (head == null) { System.out.println("\nError: List empty."); return; }
+        head = head.next;
+        System.out.println("\n[Success] Start node deleted!");
+    }
+
+    public static void deleteByValue(int target) {
+        if (head == null) { System.out.println("\nError: List empty."); return; }
+        if (head.data == target) { head = head.next; return; }
+
+        Node current = head;
+        Node prev = null;
+        while (current != null && current.data != target) {
+            prev = current;
+            current = current.next;
+        }
+        if (current == null) { System.out.println("\nError: Value not found."); return; }
+        prev.next = current.next;
+    }
+
+    public static void deleteBefore(int target) {
+        if (head == null || head.next == null) { System.out.println("\nError: List too short."); return; }
+        if (head.data == target) { System.out.println("\nError: No node before head."); return; }
+        if (head.next.data == target) { head = head.next; return; }
+
+        Node temp = head;
+        while (temp.next.next != null && temp.next.next.data != target) temp = temp.next;
+
+        if (temp.next.next == null) {
+            System.out.println("\nError: Target " + target + " not found.");
+        } else {
+            temp.next = temp.next.next;
+        }
+    }
+
+    public static void deleteAfter(int target) {
+        Node temp = head;
+        while (temp != null && temp.data != target) temp = temp.next;
+        if (temp == null) { System.out.println("\nError: Value not found."); }
+        else if (temp.next == null) { System.out.println("\nError: No node exists after " + target); }
+        else { temp.next = temp.next.next; }
+    }
+}
